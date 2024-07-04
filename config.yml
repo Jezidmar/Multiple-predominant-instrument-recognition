@@ -1,0 +1,4 @@
+paths:
+  training_data_relative_path: data/training
+  testing_data_relative_path: data/testing
+  noise_relative_path: data/noise/

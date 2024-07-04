@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Analyze WAV Files</title>
+    <link rel="stylesheet" href="../static/styles.css" />
+  </head>
+  <body>
+  <div>
+    <a id="downloadLink" class="disabled">Download Data</a>
+
+    <button id="recordButton">Start Recording</button>
+
+    <button id="optionsButton">Options</button>
+
+    <div id="optionsModal" class="modal">
+      <div class="modal-content">
+        <span hidden class="close"></span>
+        
+        <div class="toggle-container">
+          <span>Download Format:</span>
+          <span class="toggle-label">JSON</span>
+          <label class="switch">
+            <input id="fileTypeCheckbox" type="checkbox" />
+            <span class="slider round background-blue"></span>
+          </label>
+          <span class="toggle-label">CSV</span>
+        </div>
+
+        <div class="toggle-container">
+          <span>Model Mixing</span>
+          <label class="switch">
+            <input type="checkbox" onchange="toggleModelMixing()" />
+            <span class="slider round"></span>
+          </label>
+        </div>
+
+        <div class="dropdown" id="modelSelectionDiv">
+          <div class="mybox">
+            <span>Choose Model:</span>
+            <span class="myarrow"></span>
+            <select id="modelSelect" onchange="setModel(this.value)">
+              {% for model_name, display_name in model_names.items() %}
+              <option value="{{ model_name}}">{{ display_name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <div id="modelMixingDiv" hidden>
+          {% for model_name, display_name in model_names.items() %}
+          <div class="slider-container">
+            <label>{{ display_name }}</label>
+            <input
+              type="range"
+              min="0"
+              max="1"
+              step="0.01"
+              value="{{ 1 if loop.index == 1 else 0 }}"
+              id="slider-{{model_name}}"
+              oninput="updateSliderValue(this, '{{model_name}}')"
+            />
+            <input
+              type="number"
+              min="0"
+              max="1"
+              step="0.01"
+              value="{{ 1 if loop.index == 1 else 0 }}"
+              id="value-{{model_name}}"
+              value="0"
+              class="sliderValue"
+              oninput="updateSliderValue(this, '{{model_name}}')"
+            />
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <input id="fileInput" type="file" name="files" multiple />
+    <div id="uploadDiv" ondrop="onDrop(event)">
+      <p>Drag and drop or click to select files</p>
+    </div>
+
+    <table id="table">
+      <thead>
+        <tr>
+          <th>Song name</th>
+          <th>Cello</th>
+          <th>Clarinet</th>
+          <th>Flute</th>
+          <th>Acoustic Guitar</th>
+          <th>Electric Guitar</th>
+          <th>Organ</th>
+          <th>Piano</th>
+          <th>Saxophone</th>
+          <th>Trumpet</th>
+          <th>Violin</th>
+          <th>Voice</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+
+    <script type="text/javascript">
+      const modelNames = Object.keys({{ model_names|safe }});
+      let selectedModelName = {{ DEFAULT_MODEL_NAME|tojson|safe }};
+    </script>
+    <script src="../static/script.js"></script>
+  </body>
+</html>

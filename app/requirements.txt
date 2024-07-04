@@ -1,0 +1,10 @@
+cython
+librosa
+scipy
+matplotlib
+pandas
+numpy
+flask
+tensorflow
+keras
+pydub
